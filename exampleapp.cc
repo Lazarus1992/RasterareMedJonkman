@@ -195,73 +195,8 @@ void JontesProjekt::Run()
 	glShadeModel(GL_FLAT);
 	position = Vector3(0, 0, 0);
 
-
-	//int width, height, numComponents;
-	//unsigned char* data;
-	//data = stbi_load(("first.ppm"), &width, &height, &numComponents, 3);
-
-	//if (data == NULL)
-	//	cerr << "Unable to load texture: " << endl;
-
-	//std::ifstream is("first.ppm", std::ifstream::binary);
-	//if (is)
-	//{
-	//	is.seekg(0, is.end);
-	//	int length = is.tellg();
-	//	is.seekg(0, is.beg);
-
-	//	char *buffer = new char[length];
-
-	//	is.read(buffer, length);
-
-	//	int totalSize = 0;
-
-	//	//Prepare naxHeader to be able to store data in form of casted char* to its own datatype.
-	//	//The data is incremented by the size of Nax3Header datatype and converted from bytes to whatever datatypes Nax3Header stores.
-	//	//This is done evertime buffer is incremented in this function.
-	//	char *naxHeader = (char *)buffer;
-	//	//buffer += sizeof(char);
-	//	buffer += sizeof(Rgb);
-	//	buffer += sizeof(Rgb);
-	//	buffer += sizeof(Rgb);
-
-	//}
-	//stbi_image_free(data);
-
-
-
-	//for (i = 0; i < size; i += 3)
-	//{
-	//	unsigned char tmp = data[i];
-	//	
-	//	data[i] = data[i + 2];
-	//	data[i + 2] = tmp;
-	//}
-
-	//std::ifstream file("first.ppm");
-	//if (file.is_open()) {
-	//	std::string line;
-	//	while (getline(file, line)) {
-	//		// using printf() in all tests for consistency
-	//		printf("%s", line.c_str());
-	//	}
-	//	file.close();
-	//}
-
 	const uint32_t w = 2;
 	const uint32_t h = 2;
-
-	int i, j;
-	FILE* f = fopen("first.ppm", "rb");
-
-	unsigned char header[11];
-	fread(header, sizeof(unsigned char), 11, f);
-
-	int size = 3 * w * h;
-	Rgb *data = new Rgb[w*h];
-
-	fread(data, sizeof(Rgb), w*h, f);
-	fclose(f);
 
 	Vec2 v0 = { 491.407, 411.407 }; //höger röd
 	Vec2 v1 = { 148.593, 68.5928 }; //uppe vänster grön
@@ -275,6 +210,20 @@ void JontesProjekt::Run()
 	Vec3 c1 = { 0, 1, 0 };
 	Vec3 c2 = { 0, 0, 1 };
 
+	//int i, j;
+	//Read file and store data
+	FILE* f = fopen("first.ppm", "rb");
+
+	unsigned char header[11];
+	fread(header, sizeof(unsigned char), 11, f);
+
+	int size = 3 * w * h;
+	Rgb *data = new Rgb[w*h];
+
+	fread(data, sizeof(Rgb), w*h, f);
+	fclose(f);
+
+	//Write file and allocate data
 	FILE *fp = fopen("first1.ppm", "wb"); /* b - binary mode */
 	(void)fprintf(fp, "P6\n%d %d\n255\n", h, w);
 	Rgb *BIGcolor = new Rgb[w * h];
@@ -308,53 +257,6 @@ void JontesProjekt::Run()
 	}
 	(void)fwrite(BIGcolor, 1, w*h*3, fp);
 	(void)fclose(fp);
-
-
-	
-
-	//Vec2 v0 = { 491.407, 411.407 };
-	//Vec2 v1 = { 148.593, 168.5928 }; //blue, nere vänster
-	//Vec2 v2 = { 148.593, 411.407 };
-	////Vec2 st0 = {}
-	//Vec3 c0 = { 1, 0, 0 };
-	//Vec3 c1 = { 0, 1, 0 };
-	//Vec3 c2 = { 0, 0, 1 };
-
-	//const uint32_t w = 512;
-	//const uint32_t h = 512;
-
-	//Rgb *framebuffer = new Rgb[w * h];
-	//memset(framebuffer, 0x0, w * h * 3);
-
-	//float area = edgeFunction(v0, v1, v2);
-
-	//for (uint32_t j = 0; j < h; ++j) {
-	//	for (uint32_t i = 0; i < w; ++i) {
-	//		Vec2 p = { i + 0.5f, j + 0.5f };
-	//		float w0 = edgeFunction(v1, v2, p);
-	//		float w1 = edgeFunction(v2, v0, p);
-	//		float w2 = edgeFunction(v0, v1, p);
-	//		if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-	//			w0 /= area;
-	//			w1 /= area;
-	//			w2 /= area;
-	//			float r = w0 * c0[0] + w1 * c1[0] + w2 * c2[0];
-	//			float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
-	//			float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
-	//			framebuffer[j * w + i][0] = (unsigned char)(r * 255);
-	//			framebuffer[j * w + i][1] = (unsigned char)(g * 255);
-	//			framebuffer[j * w + i][2] = (unsigned char)(b * 255);
-	//		}
-	//	}
-	//}
-
-	//std::ofstream ofs;
-	//ofs.open("./raster2d.ppm");
-	//ofs << "P6\n" << w << " " << h << "\n255\n";
-	//ofs.write((char*)framebuffer, w * h * 3);
-	//ofs.close();
-
-	//delete[] framebuffer;
 
 	projectionMatrix = projectionMatrix.Perspective(45.0f, windowX / windowY, 0.1f, 100.0f);
 
