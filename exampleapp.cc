@@ -178,9 +178,10 @@ bool JontesProjekt::Open()
 }
 
 inline
-float JontesProjekt::edgeFunction(const Vec2 &a, const Vec2 &b, const Vec2 &c)
+float JontesProjekt::edgeFunction(const Vector2 &a, const Vector2 &b, const Vector2 &c)
 {
-	return (c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0]);
+	//return (c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0]);
+	return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
 }
 
 
@@ -195,22 +196,32 @@ void JontesProjekt::Run()
 	glShadeModel(GL_FLAT);
 	position = Vector3(0, 0, 0);
 
-	const uint32_t w = 2;
-	const uint32_t h = 2;
 
-	Vec2 v0 = { 491.407, 411.407 }; //höger röd
-	Vec2 v1 = { 148.593, 68.5928 }; //uppe vänster grön
-	Vec2 v2 = { 148.593, 411.407 }; //nere vänster blå
 
-	Vec2 st0 = { 1, 0 };
-	Vec2 st1 = { 0, 1 };
-	Vec2 st2 = { 0, 0 };
+	Vector2 v0 = { 491.407, 411.407 }; //höger röd
+	Vector2 v1 = { 14.593, 68.5928 }; //uppe vänster grön
+	Vector2 v2 = { 148.593, 490.407 }; //nere vänster blå	
+	//Vector2 v0 = { 20.407, 40.407 }; //höger röd
+	//Vector2 v1 = { 10.593, 30.5928 }; //uppe vänster grön
+	//Vector2 v2 = { 40.593, 30.407 }; //nere vänster blå
 
-	Vec3 c0 = { 1, 0, 0 };
-	Vec3 c1 = { 0, 1, 0 };
-	Vec3 c2 = { 0, 0, 1 };
+	Vector2 st0 = { 1, 0 };
+	Vector2 st1 = { 0, 1 };
+	Vector2 st2 = { 0, 0 };
 
-	//int i, j;
+	Vector3 c0 = { 1, 0, 0 };
+	Vector3 c1 = { 0, 1, 0 };
+	Vector3 c2 = { 0, 0, 1 };
+
+
+	//Triangle
+	const uint32_t w = 500;
+	const uint32_t h = 500;
+
+	//Own test
+	//const uint32_t w = 2;
+	//const uint32_t h = 2;
+
 	//Read file and store data
 	FILE* f = fopen("first.ppm", "rb");
 
@@ -231,28 +242,28 @@ void JontesProjekt::Run()
 	for (uint32_t j = 0; j < h; ++j) {
 		for (uint32_t i = 0; i < w; ++i) {
 			
-			//Vec2 p = { i + 0.5f, j + 0.5f };
-			//float w0 = edgeFunction(v1, v2, p);
-			//float w1 = edgeFunction(v2, v0, p);
-			//float w2 = edgeFunction(v0, v1, p);
+			Vector2 p = { i + 0.5f, j + 0.5f };
+			float w0 = edgeFunction(v1, v2, p);
+			float w1 = edgeFunction(v2, v0, p);
+			float w2 = edgeFunction(v0, v1, p);
 
-			//if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-			//	w0 /= area;
-			//	w1 /= area;
-			//	w2 /= area;
-			//	float r = w0 * c0[0] + w1 * c1[0] + w2 * c2[0];
-			//	float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
-			//	float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
+			if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+				w0 /= area;
+				w1 /= area;
+				w2 /= area;
+				float r = w0 * c0[0] + w1 * c1[0] + w2 * c2[0];
+				float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
+				float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
 
-			//	BIGcolor[j * w + i][0] = (unsigned char)(r * 255);
-			//	BIGcolor[j * w + i][1] = (unsigned char)(g * 255);
-			//	BIGcolor[j * w + i][2] = (unsigned char)(b * 255);
-			//}
+				BIGcolor[j * w + i][0] = (unsigned char)(r * 255);
+				BIGcolor[j * w + i][1] = (unsigned char)(g * 255);
+				BIGcolor[j * w + i][2] = (unsigned char)(b * 255);
+			}
 
 
-			BIGcolor[j * w + i][0] = data[2][0];
-			BIGcolor[j * w + i][1] = data[2][1];
-			BIGcolor[j * w + i][2] = data[2][2];
+			//BIGcolor[j * w + i][0] = data[2][0];
+			//BIGcolor[j * w + i][1] = data[2][1];
+			//BIGcolor[j * w + i][2] = data[2][2];
 		}
 	}
 	(void)fwrite(BIGcolor, 1, w*h*3, fp);
