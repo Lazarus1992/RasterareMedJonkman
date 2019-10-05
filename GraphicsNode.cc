@@ -44,7 +44,10 @@ void GraphicsNode::Draw()
 	{
 		doOnce = false;
 		 //tex_->Bind("projects/MathLib4D/Skeleton/footman/Footman_Diffuse.tga", 0);
-		 tex_->Bind("first1.ppm", 0);
+		 //tex_->Bind("first1.ppm", 0);
+		 //tex_->Bind("first2.ppm", 0);
+		 //tex_->Bind("TextureToFetchFrom.ppm", 0);
+		 tex_->Bind("TextureToWriteTo.ppm", 0);
 		//tex_->Bind("raster2dasd.ppm", 0);
 		// tex_->Bind("projects/MathLib4D/Skeleton/footman/Footman_Specular.tga", 1);
 		// tex_->Bind("projects/MathLib4D/Skeleton/footman/Footman_Normal.tga", 2);

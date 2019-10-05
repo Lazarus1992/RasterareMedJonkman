@@ -12,6 +12,7 @@
 #include <cstdlib> 
 #include <fstream>
 #include "stb_image.h"
+#include <string>
 
 using namespace Display;
 
@@ -196,78 +197,136 @@ void JontesProjekt::Run()
 	glShadeModel(GL_FLAT);
 	position = Vector3(0, 0, 0);
 
+	#pragma region ReadWriteFiles
+	//Read file and store data
+//FILE* f = fopen("TextureToFetchFrom.ppm", "rb");
+//FILE* f = fopen("first2.ppm", "rb");
+//const int headerLength = 9 + widthLength + heightLength;
+
+////unsigned char header[11];
+//unsigned char* header = new unsigned char[headerLength];
+////fread(header, sizeof(unsigned char), 11, f);
+//fread(header, sizeof(unsigned char), headerLength, f);
+//
+
+////unsigned char a1 = header[1];
+////unsigned char a = header[0];
+////unsigned char a2 = header[2];
+////unsigned char width = header[3];
+////unsigned char a4 = header[4];
+////unsigned char height = header[5];
+////unsigned char a6 = header[6];
+////unsigned char a7 = header[7];
+////unsigned char a8 = header[8];
+////unsigned char a9 = header[9];
+////unsigned char a10 = header[10];
+////unsigned char a14 = header[11];
+////unsigned char a1e = header[12];
+////unsigned char a16 = header[13];
+////unsigned char a17 = header[14]; //last
+//
+	//	//Triangle
+	////const uint32_t w = 500;
+	////const uint32_t h = 500;
+
+	////Small Triangle
+	//const uint32_t w = 5;
+	//const uint32_t h = 5;
 
 
-	Vector2 v0 = { 491.407, 411.407 }; //höger röd
-	Vector2 v1 = { 14.593, 68.5928 }; //uppe vänster grön
-	Vector2 v2 = { 148.593, 490.407 }; //nere vänster blå	
+	//std::string strWidth = std::to_string(w);
+	//std::string strHeight = std::to_string(h);
+	//const int widthLength = strWidth.length();
+	//const int heightLength = strHeight.length();
+////int size = 3 * w * h;
+//Rgb *data = new Rgb[w*h];
+
+//fread(data, sizeof(Rgb), w*h, f);
+//fclose(f);
+
+////Write file and allocate data
+//FILE *fp = fopen("TextureToWriteTo.ppm", "wb"); /* b - binary mode */
+////FILE *fp = fopen("TextureToFetchFrom.ppm", "wb"); /* b - binary mode */
+//(void)fprintf(fp, "P6\n%d %d\n255\n", h, w);
+//Rgb *BIGcolor = new Rgb[w * h];
+//float area = edgeFunction(v0, v1, v2);
+//for (uint32_t j = 0; j < h; ++j) {
+//	for (uint32_t i = 0; i < w; ++i) {
+//		
+//		//Vector2 p = { i + 0.5f, j + 0.5f };
+//		Vector2 p = { (float)i, (float)j };
+//		float w0 = edgeFunction(v1, v2, p);
+//		float w1 = edgeFunction(v2, v0, p);
+//		float w2 = edgeFunction(v0, v1, p);
+
+//		if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+//			w0 /= area;
+//			w1 /= area;
+//			w2 /= area;
+
+//			Vector2 textureUV = st0 * w0 + st1 * w1 + st2 * w2;
+//			//float row = h - 1;
+//			//float column = w - 1;
+//			float row = h;
+//			float column = w;
+//			int pixelToGet = textureUV.y * row * (float)w + textureUV.x * column;
+
+//			////Row * width + col
+//			BIGcolor[j * w + i][0] = data[pixelToGet][0];
+//			BIGcolor[j * w + i][1] = data[pixelToGet][1];
+//			BIGcolor[j * w + i][2] = data[pixelToGet][2];
+
+
+//			//OLD
+//			//float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
+//			//float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
+
+//			//BIGcolor[j * w + i][0] = (unsigned char)(r * 255);
+//			//BIGcolor[j * w + i][1] = (unsigned char)(g * 255);
+//			//BIGcolor[j * w + i][2] = (unsigned char)(b * 255);
+
+
+//			//RANDOM
+//			//float r = (i + 1) * 211231 % 255;
+//			//float g = (i + j + 7) * 323123 % 255;
+//			//float b = (i - j + 4) * 631515 % 255;
+
+//			//BIGcolor[j * w + i][0] = (unsigned char)(r);
+//			//BIGcolor[j * w + i][1] = (unsigned char)(g);
+//			//BIGcolor[j * w + i][2] = (unsigned char)(b);
+//		}
+
+
+//		//BIGcolor[j * w + i][0] = data[0][0];
+//		//BIGcolor[j * w + i][1] = data[0][1];
+//		//BIGcolor[j * w + i][2] = data[0][2];
+//	}
+//}
+//(void)fwrite(BIGcolor, 1, w*h*3, fp);
+//(void)fclose(fp);
+#pragma endregion
+
+	//Vector2 v0 = { 491.407, 411.407 }; //höger röd
+	//Vector2 v1 = { 14.593, 68.5928 }; //uppe vänster grön
+	//Vector2 v2 = { 148.593, 490.407 }; //nere vänster blå	
 	//Vector2 v0 = { 20.407, 40.407 }; //höger röd
 	//Vector2 v1 = { 10.593, 30.5928 }; //uppe vänster grön
 	//Vector2 v2 = { 40.593, 30.407 }; //nere vänster blå
+	Vector2 v0 = { 5.0f, 5.0f }; //u: 1, v: 1	Nere höger
+	Vector2 v1 = { 0.0f, 0.0f }; //u: 0, v: 0	Uppe vänster
+	Vector2 v2 = { 0.0f, 5.0f }; //u: 0, v: 1 	Nere vänster	
 
-	Vector2 st0 = { 1, 0 };
-	Vector2 st1 = { 0, 1 };
-	Vector2 st2 = { 0, 0 };
+	Vector2 st0 = { 1, 1 };
+	Vector2 st1 = { 0, 0 };
+	Vector2 st2 = { 0, 1 };
 
 	Vector3 c0 = { 1, 0, 0 };
 	Vector3 c1 = { 0, 1, 0 };
 	Vector3 c2 = { 0, 0, 1 };
 
 
-	//Triangle
-	const uint32_t w = 500;
-	const uint32_t h = 500;
-
-	//Own test
-	//const uint32_t w = 2;
-	//const uint32_t h = 2;
-
-	//Read file and store data
-	FILE* f = fopen("first.ppm", "rb");
-
-	unsigned char header[11];
-	fread(header, sizeof(unsigned char), 11, f);
-
-	int size = 3 * w * h;
-	Rgb *data = new Rgb[w*h];
-
-	fread(data, sizeof(Rgb), w*h, f);
-	fclose(f);
-
-	//Write file and allocate data
-	FILE *fp = fopen("first1.ppm", "wb"); /* b - binary mode */
-	(void)fprintf(fp, "P6\n%d %d\n255\n", h, w);
-	Rgb *BIGcolor = new Rgb[w * h];
-	float area = edgeFunction(v0, v1, v2);
-	for (uint32_t j = 0; j < h; ++j) {
-		for (uint32_t i = 0; i < w; ++i) {
-			
-			Vector2 p = { i + 0.5f, j + 0.5f };
-			float w0 = edgeFunction(v1, v2, p);
-			float w1 = edgeFunction(v2, v0, p);
-			float w2 = edgeFunction(v0, v1, p);
-
-			if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-				w0 /= area;
-				w1 /= area;
-				w2 /= area;
-				float r = w0 * c0[0] + w1 * c1[0] + w2 * c2[0];
-				float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
-				float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
-
-				BIGcolor[j * w + i][0] = (unsigned char)(r * 255);
-				BIGcolor[j * w + i][1] = (unsigned char)(g * 255);
-				BIGcolor[j * w + i][2] = (unsigned char)(b * 255);
-			}
 
 
-			//BIGcolor[j * w + i][0] = data[2][0];
-			//BIGcolor[j * w + i][1] = data[2][1];
-			//BIGcolor[j * w + i][2] = data[2][2];
-		}
-	}
-	(void)fwrite(BIGcolor, 1, w*h*3, fp);
-	(void)fclose(fp);
 
 	projectionMatrix = projectionMatrix.Perspective(45.0f, windowX / windowY, 0.1f, 100.0f);
 
@@ -289,6 +348,9 @@ void JontesProjekt::Run()
 	rasterizer.mvpMatrix = (projectionMatrix * viewMatrix * graphicsNode->worldTransform);
 	rasterizer.vertexBuffer = graphicsNode->GetMesh()->vertexBuffer;
 	rasterizer.indexBuffer = graphicsNode->GetMesh()->indexBuffer;
+	rasterizer.Init();
+	rasterizer.DrawTriangle(v0, v1, v2);
+	rasterizer.Shutdown();
 
 	//Will be the same for all graphicNodes
 	pointLight.pos.SetVect(0.0f, 0.0f, -4.0f, 1.0f);
@@ -597,3 +659,4 @@ void JontesProjekt::KeyPress()
 		up = Vector3::Cross(right, direction);
 	}
 }
+
