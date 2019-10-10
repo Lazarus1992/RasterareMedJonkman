@@ -312,19 +312,22 @@ void JontesProjekt::Run()
 	//Vector2 v0 = { 20.407, 40.407 }; //höger röd
 	//Vector2 v1 = { 10.593, 30.5928 }; //uppe vänster grön
 	//Vector2 v2 = { 40.593, 30.407 }; //nere vänster blå
-	Vector2 v0 = { 5.0f, 5.0f }; //u: 1, v: 1	Nere höger
-	Vector2 v1 = { 0.0f, 0.0f }; //u: 0, v: 0	Uppe vänster
-	Vector2 v2 = { 0.0f, 5.0f }; //u: 0, v: 1 	Nere vänster	
+	Vector2 v0_00 = { 5.0f, 5.0f }; //u: 1, v: 1	Nere höger
+	Vector2 v1_00 = { 0.0f, 0.0f }; //u: 0, v: 0	Uppe vänster
+	Vector2 v2_00 = { 0.0f, 5.0f }; //u: 0, v: 1 	Nere vänster
 
-	Vector2 st0 = { 1, 1 };
-	Vector2 st1 = { 0, 0 };
-	Vector2 st2 = { 0, 1 };
+	Vector2 v0_01 = { 0.0f, 0.0f };		// Uppe v'nster
+	Vector2 v1_01 = { 5.0f, 1.0f };		// 
+	Vector2 v2_01 = { 1.0f, 3.0f }; 
 
-	Vector3 c0 = { 1, 0, 0 };
-	Vector3 c1 = { 0, 1, 0 };
-	Vector3 c2 = { 0, 0, 1 };
+	//Vector2 st0 = { 1, 1 };
+	//Vector2 st1 = { 0, 0 };
+	//Vector2 st2 = { 0, 1 };
 
 
+	Vector2 v0 = v0_01;
+	Vector2 v1 = v1_01;
+	Vector2 v2 = v2_01;
 
 
 
@@ -348,7 +351,7 @@ void JontesProjekt::Run()
 	rasterizer.mvpMatrix = (projectionMatrix * viewMatrix * graphicsNode->worldTransform);
 	rasterizer.vertexBuffer = graphicsNode->GetMesh()->vertexBuffer;
 	rasterizer.indexBuffer = graphicsNode->GetMesh()->indexBuffer;
-	rasterizer.Init();
+	rasterizer.Init(v0, v1, v2);
 	rasterizer.DrawTriangle(v0, v1, v2);
 	rasterizer.Shutdown();
 

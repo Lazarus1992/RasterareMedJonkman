@@ -4,44 +4,48 @@
 
 SoftwareRenderer::SoftwareRenderer()
 {
-	functionLamda = [this](int xCoord, int yCoord, Rgb* fetchTexture, Rgb* rasterizedTexture)
+	functionLamda = [this](int xCoord, int yCoord, Rgb* fetchTexture, Rgb* rasterizedTexture, Triangle triangle)
 	{
-		Vector2 v0 = { 5.0f, 5.0f }; //u: 1, v: 1	Nere höger
-		Vector2 v1 = { 0.0f, 0.0f }; //u: 0, v: 0	Uppe vänster
-		Vector2 v2 = { 0.0f, 5.0f }; //u: 0, v: 1 	Nere vänster	
+		Triangle localTriangle = triangle; // 0,0		0,5		5,5
+		//this->triangles[0]; // 0,0		0,5		5,5
+		
 
-		Vector2 uv0 = { 1, 1 };
-		Vector2 uv1 = { 0, 0 };
-		Vector2 uv2 = { 0, 1 };
+		Vector2 vec0 = localTriangle.v0.position;
+		Vector2 vec1 = localTriangle.v1.position;
+		Vector2 vec2 = localTriangle.v2.position;
 
-
-
+		//Vector2 uv0 = localTriangle.v0.uv;
+		//Vector2 uv1 = localTriangle.v1.uv;
+		//Vector2 uv2 = localTriangle.v2.uv;
+		
 		cout << "Inside lambda" << endl;
 
-		float area = EdgeFunction(v0, v1, v2);
-		Vector2 p = { (float)xCoord, (float)yCoord };
-		float w0 = EdgeFunction(v1, v2, p);
-		float w1 = EdgeFunction(v2, v0, p);
-		float w2 = EdgeFunction(v0, v1, p);
+		float area = EdgeFunction(vec0, vec1, vec2);
+		//Vector2 p = { (float)xCoord, (float)yCoord }; //USE WITHOUT CENTERPIXEL FOR FETCHING TEXTURE PIXELS
+		Vector2 p = { (float)xCoord + 0.5f, (float)yCoord + 0.5f }; //USE WITH	CENTERPIXEL FOR COLORING THE TRIANGLE
+		//float w0 = EdgeFunction(vec1, vec2, p);
+		//float w1 = EdgeFunction(vec2, vec0, p);
+		//float w2 = EdgeFunction(vec0, vec1, p);
 
-		if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-			w0 /= area;
-			w1 /= area;
-			w2 /= area;
+		//if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+		if (this->PointInTriangle(vec0, vec1, vec2, p)) {
+			//w0 /= area;
+			//w1 /= area;
+			//w2 /= area;
 
-			Vector2 textureUV = uv0 * w0 + uv1 * w1 + uv2 * w2;
-			float row = this->imageHeight;
-			float column = this->imageWidth;
-			int pixelToGet = textureUV.y * row * (float)this->imageWidth + textureUV.x * column;
+			//Vector2 textureUV = uv0 * w0 + uv1 * w1 + uv2 * w2;
+			//float row = this->imageHeight;
+			//float column = this->imageWidth;
+			//int pixelToGet = textureUV.y * row * (float)this->imageWidth + textureUV.x * column;
 
 			////Row * width + col
-			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = 1;
-			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = 1;
-			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = 1;
+			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = 255;
+			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = 1;
+			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = 1;
 
-			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = this->fetchTexture[pixelToGet][0];
-			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = this->fetchTexture[pixelToGet][1];
-			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = this->fetchTexture[pixelToGet][2];
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = this->fetchTexture[pixelToGet][0];
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = this->fetchTexture[pixelToGet][1];
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = this->fetchTexture[pixelToGet][2];
 		}
 
 	};
@@ -71,28 +75,43 @@ SoftwareRenderer::~SoftwareRenderer()
 {
 }
 
-void SoftwareRenderer::Init()
+void SoftwareRenderer::Init(Vector2 v0, Vector2 v1, Vector2 v2)
 {
-	//FILE *fp = fopen("TextureToWriteTo.ppm", "wb");
-	filePtr = fopen("TextureToWriteTo.ppm", "wb");
-	//(void)fprintf(fp, "P6\n%d %d\n255\n", this->imageHeight, this->imageWidth);
-	//(void)fwrite(this->rasterizeTexture, 1, this->imageWidth * this->imageHeight * 3, fp);
-	//return fp;
-	(void)fprintf(filePtr, "P6\n%d %d\n255\n", this->imageHeight, this->imageWidth);
-	//return filePtr;
+	//Create triangles
+	Vertex tempVertex0(v0);
+	Vertex tempVertex1(v1);
+	Vertex tempVertex2(v2);
+	Triangle tempTriangle(tempVertex0, tempVertex1, tempVertex2);
+	triangles.push_back(tempTriangle);
+
+	this->filePtr = fopen("TextureToWriteTo.ppm", "wb");
+	(void)fprintf(this->filePtr, "P6\n%d %d\n255\n", this->imageHeight, this->imageWidth);
 }
 
 void SoftwareRenderer::Shutdown()
 {
 	(void)fwrite(this->rasterizeTexture, 1, this->imageWidth * this->imageHeight * 3, filePtr);
 	(void)fclose(this->filePtr);
-	//(void)fclose(fp);
 }
 
 inline
 float SoftwareRenderer::EdgeFunction(Vector2 a, Vector2 b, Vector2 c)
 {
 	return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
+	//return (c.x - a.x + 0.5f) * (b.y + 0.5f - a.y + 0.5f) - (c.y - a.y + 0.5f) * (b.x + 0.5f  - a.x + 0.5f);
+}
+
+bool SoftwareRenderer::PointInTriangle(Vector2 A, Vector2 B, Vector2 C, Vector2 point)
+{
+	float w1 = (A.x * (C.y - A.y) + (point.y - A.y) * (C.x - A.x) - point.x * (C.y - A.y)) / ((B.y - A.y)*(C.x - A.x) - (B.x - A.x) * (C.y - A.y));
+
+	float w2 = (point.y - A.y - w1 * (B.y - A.y)) / (C.y - A.y);
+
+	if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1)
+	{
+		return true;//Point inside triangle
+	}
+	return false;
 }
 
 Rgb* SoftwareRenderer::FetchDataFromTexture(const char* path)
@@ -126,14 +145,23 @@ void SoftwareRenderer::DrawTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 	Vector2* pv2 = &v2;
 
 	//Swap so v0 has lowest y and v2 has highest
-	if (pv1->y < pv0->y) std::swap(pv0, pv1);
-	if (pv2->y < pv1->y) std::swap(pv1, pv2);
-	if (pv1->y < pv0->y) std::swap(pv0, pv1);
+	if (pv1->y < pv0->y)
+	{
+		std::swap(pv0, pv1);
+	}
+	if (pv2->y < pv1->y)
+	{
+		std::swap(pv1, pv2);
+	}
+	if (pv1->y < pv0->y)
+	{
+		std::swap(pv0, pv1);
+	}
 
 	//Flat top or flat bot triangle
 	if (pv0->y == pv1->y) //Flat top
 	{
-		//Swap bottom vertices - pv0 has it lowest x value
+		//Swap bottom vertices - pv0 has it lowest x valuei
 	   //if (pv1->x < pv0->x) std::swap(pv0, pv1);
 		if (pv0->x > pv1->x) std::swap(pv0, pv1);
 		DrawFlatTopTriangle(*pv0, *pv1, *pv2);
@@ -174,7 +202,10 @@ void SoftwareRenderer::DrawFlatTopTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 	*	| /
 	*	|/
 	*/
-
+	Vertex vertex00(v0);
+	Vertex vertex01(v1);
+	Vertex vertex02(v2);
+	Triangle tempTriangle(vertex00, vertex01, vertex02);
 
 	//Slopes
 	float m0 = (v2.x - v0.x) / (v2.y - v0.y);
@@ -197,7 +228,7 @@ void SoftwareRenderer::DrawFlatTopTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 
 		for (int x = xStart; x < xEnd; x++)
 		{
-			functionLamda(x, y, this->fetchTexture, this->rasterizeTexture);
+			functionLamda(x, y, this->fetchTexture, this->rasterizeTexture, tempTriangle);
 		}
 	}
 }
@@ -212,7 +243,10 @@ void SoftwareRenderer::DrawFlatBotTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 	*	|   \
 	*	|____\
 	*/
-
+	Vertex vertex00(v0);
+	Vertex vertex01(v1);
+	Vertex vertex02(v2);
+	Triangle tempTriangle(vertex00, vertex01, vertex02);
 
 	//Slopes
 	float m0 = (v1.x - v0.x) / (v1.y - v0.y);
@@ -233,11 +267,11 @@ void SoftwareRenderer::DrawFlatBotTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 		const int xStart = (int)ceil(px0 - 0.5f);
 		const int xEnd = (int)ceil(px1 - 0.5f);
 
-		//Open file
+		//
 
 		for (int x = xStart; x < xEnd; x++)
 		{
-			functionLamda(x, y, this->fetchTexture, this->rasterizeTexture);
+			functionLamda(x, y, this->fetchTexture, this->rasterizeTexture, tempTriangle);
 		}
 
 		//Close file
