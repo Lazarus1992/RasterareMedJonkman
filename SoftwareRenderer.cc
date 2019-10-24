@@ -1,4 +1,5 @@
 #include "SoftwareRenderer.h"
+#include "Math.h"
 
 
 
@@ -17,35 +18,98 @@ SoftwareRenderer::SoftwareRenderer()
 		//Vector2 uv0 = localTriangle.v0.uv;
 		//Vector2 uv1 = localTriangle.v1.uv;
 		//Vector2 uv2 = localTriangle.v2.uv;
+		//Vector2 uv0 = { 0, 0 };
+		//Vector2 uv1 = { 0, 1 };
+		//Vector2 uv2 = { 1, 1 };
+
 		
-		cout << "Inside lambda" << endl;
+
+		//Create UVs from vertex positions
+		Vector2 uv0 = { vec0.x / this->imageWidth, vec0.y / this->imageHeight };
+		Vector2 uv1 = { vec1.x / this->imageWidth, vec1.y / this->imageHeight };
+		Vector2 uv2 = { vec2.x / this->imageWidth, vec2.y / this->imageHeight };
+		
+		//cout << "Inside lambda" << endl;
 
 		float area = EdgeFunction(vec0, vec1, vec2);
-		//Vector2 p = { (float)xCoord, (float)yCoord }; //USE WITHOUT CENTERPIXEL FOR FETCHING TEXTURE PIXELS
-		Vector2 p = { (float)xCoord + 0.5f, (float)yCoord + 0.5f }; //USE WITH	CENTERPIXEL FOR COLORING THE TRIANGLE
-		//float w0 = EdgeFunction(vec1, vec2, p);
-		//float w1 = EdgeFunction(vec2, vec0, p);
-		//float w2 = EdgeFunction(vec0, vec1, p);
+		Vector2 p = { (float)xCoord, (float)yCoord }; //USE WITHOUT CENTERPIXEL FOR FETCHING TEXTURE PIXELS
+		//Vector2 p = { (float)xCoord + 0.5f, (float)yCoord + 0.5f }; //USE WITH	CENTERPIXEL FOR COLORING THE TRIANGLE 
+		//Vector2 textureReadOffset = { -0.5f, -0.5f };
+		float w0 = EdgeFunction(vec1, vec2, p);
+		float w1 = EdgeFunction(vec2, vec0, p);
+		float w2 = EdgeFunction(vec0, vec1, p);
+
+
 
 		//if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-		if (this->PointInTriangle(vec0, vec1, vec2, p)) {
-			//w0 /= area;
-			//w1 /= area;
-			//w2 /= area;
+		if (this->PointInTriangle(vec0, vec1, vec2, p + Vector2(0.5f, 0.5f))) { //Puts color in pixel
+			w0 /= area;
+			w1 /= area;
+			w2 /= area;
 
-			//Vector2 textureUV = uv0 * w0 + uv1 * w1 + uv2 * w2;
+
+			Vector4 fPointLightColor(0.8f, .1f, .1f, 1.0f);
+			Vector3 fNormal(0, 0, 1);
+			Vector3 fLight(50.0f, 20.0f, 5.0f);
+			//Vector3 fLight(100.0f, 100.0f, 5.0f);
+			//Vector3 fVertexRelativePosition(xCoord, yCoord, 0); //Maybe förskjut
+			//Vector3 fVertexRelativePosition(xCoord + 0.5f, yCoord + 0.5f, 0.0f); //Maybe förskjut
+			//Vector3 fVertexRelativePosition(xCoord - fLight.x, yCoord - fLight.y, 0.0f - fLight.z); //Maybe förskjut
+			Vector3 fVertexRelativePosition(xCoord - fLight.x, yCoord + fLight.y, -12.0f - fLight.z); //Maybe förskjut
+			Vector3 N = fNormal.Normalize();
+			Vector3 L = (fLight - fVertexRelativePosition).Normalize();
+			//Vector3 L = (fLight).Normalize();
+			//Vector3 E = (fVertexRelativePosition * 1.0f).Normalize();
+			Vector3 E = (fVertexRelativePosition * -1.0f).Normalize();
+			//E.z = 0;
+			Vector3 H = (L + E).Normalize();
+
+			float fPointLightIntensity = 10.0f;
+
+			////Specular + diffuse code
+			float diffuse_intensity = max(N.Dot(L), 0.0f);
+			Vector4 diffuse_final = fPointLightColor * diffuse_intensity;
+
+			//float spec_intensity = pow(max(dot(N, H), 0.0), 30);
+			float spec_intensity = pow(max(N.Dot(H), 0.0f), 30);
+			Vector4 spec_final = Vector4(0.1, 0.1, 0.1, 1.0) * spec_intensity * fPointLightIntensity;
+
+			////outColor = vec4(0.6f, 0.3f, 0.0f, 1.0f);
+			Vector4 outColor = diffuse_final + spec_final;
+			//Vector4 outColor = diffuse_final;
+
+			Vector2 textureUV = uv0 * w0 + uv1 * w1 + uv2 * w2;
 			//float row = this->imageHeight;
+			float row = 5;
 			//float column = this->imageWidth;
+			float column = 5;
 			//int pixelToGet = textureUV.y * row * (float)this->imageWidth + textureUV.x * column;
+			int pixelToGet = round(textureUV.y * row * column + textureUV.x * column);
 
 			////Row * width + col
-			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = 255;
-			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = 1;
-			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = 1;
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = 255;
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = 1;
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = 1;
 
 			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = this->fetchTexture[pixelToGet][0];
 			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = this->fetchTexture[pixelToGet][1];
 			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = this->fetchTexture[pixelToGet][2];
+			float value0 = outColor[0];
+			float value1 = outColor[1];
+			float value2 = outColor[2];
+			float min0 = min(value0, 1.0f);
+			float min1 = min(value1, 1.0f);
+			float min2 = min(value2, 1.0f);
+
+			float max0 = max(min0, 0.0f);
+			float max1 = max(min1, 0.0f);
+			float max2 = max(min2, 0.0f);
+			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = max0*255.0f;
+			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = max1*255.0f;
+			this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = max2*255.0f;
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][0] = max(outColor[0] * 255.0f, 0.0f);
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][1] = max(outColor[1] * 255.0f, 0.0f);
+			//this->rasterizeTexture[yCoord * this->imageWidth + xCoord][2] = max(outColor[2] * 255.0f, 0.0f);
 		}
 
 	};
@@ -75,17 +139,50 @@ SoftwareRenderer::~SoftwareRenderer()
 {
 }
 
-void SoftwareRenderer::Init(Vector2 v0, Vector2 v1, Vector2 v2)
+void SoftwareRenderer::Init()
 {
-	//Create triangles
-	Vertex tempVertex0(v0);
-	Vertex tempVertex1(v1);
-	Vertex tempVertex2(v2);
-	Triangle tempTriangle(tempVertex0, tempVertex1, tempVertex2);
-	triangles.push_back(tempTriangle);
+
+	//const int indexBufferSize = 3;
+	const int indexBufferSize = 6;
+	const int vertexBufferSize = 8;
+	const int stride = 2;
+	vector<Vertex> vertices;
+	for (int i = 0; i < indexBufferSize; i++)
+	{
+		int index = *(indexBuffer + i);
+		int vertexBufferValue = *(vertexBuffer + index * stride);
+		int vertexBufferValuePlusOne = *(vertexBuffer + (index * stride) + 1);
+
+		Vertex tempVertex0(Vector2(vertexBufferValue, vertexBufferValuePlusOne));
+		vertices.push_back(tempVertex0);
+	}
+
+	for (int i = 0; i < vertices.size(); i += 3)
+	{
+		Triangle tempTriangle(vertices[i], vertices[i+1], vertices[i+2]);
+		triangles.push_back(tempTriangle);
+	}
+
 
 	this->filePtr = fopen("TextureToWriteTo.ppm", "wb");
 	(void)fprintf(this->filePtr, "P6\n%d %d\n255\n", this->imageHeight, this->imageWidth);
+
+}
+
+void SoftwareRenderer::Start()
+{
+	//Iterate through all indices and create triangles
+	for (int i = 0; i < triangles.size(); i++)
+	{
+		//Translate triangles
+		Vector4 v0_translated = mvpMatrix * Vector4(triangles[i].v0.position.x, triangles[i].v0.position.y, 0, 1);
+		Vector4 v1_translated = mvpMatrix * Vector4(triangles[i].v1.position.x, triangles[i].v1.position.y, 0, 1);
+		Vector4 v2_translated = mvpMatrix * Vector4(triangles[i].v2.position.x, triangles[i].v2.position.y, 0, 1);
+
+		DrawTriangle(Vector2(v0_translated[0], v0_translated[1]), Vector2(v1_translated[0], v1_translated[1]), Vector2(v2_translated[0], v2_translated[1]));
+	}
+
+
 }
 
 void SoftwareRenderer::Shutdown()
@@ -139,6 +236,14 @@ Rgb* SoftwareRenderer::FetchDataFromTexture(const char* path)
 
 void SoftwareRenderer::DrawTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 {
+	
+
+
+	//For each triangleTranslate triangle
+
+
+
+
 	//Create vertices from params
 	Vector2* pv0 = &v0;
 	Vector2* pv1 = &v1;
@@ -205,6 +310,9 @@ void SoftwareRenderer::DrawFlatTopTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 	Vertex vertex00(v0);
 	Vertex vertex01(v1);
 	Vertex vertex02(v2);
+	//Vertex uv0(v2);
+	//Vertex uv1(v2);
+	//Vertex uv2(v2);
 	Triangle tempTriangle(vertex00, vertex01, vertex02);
 
 	//Slopes
@@ -267,13 +375,9 @@ void SoftwareRenderer::DrawFlatBotTriangle(Vector2 v0, Vector2 v1, Vector2 v2)
 		const int xStart = (int)ceil(px0 - 0.5f);
 		const int xEnd = (int)ceil(px1 - 0.5f);
 
-		//
-
 		for (int x = xStart; x < xEnd; x++)
 		{
 			functionLamda(x, y, this->fetchTexture, this->rasterizeTexture, tempTriangle);
 		}
-
-		//Close file
 	}
 }

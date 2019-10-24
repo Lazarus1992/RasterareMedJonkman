@@ -49,8 +49,10 @@ public:
 	Rgb* rasterizeTexture;
 	//Rgb* fetchTexture[5*5];
 	//Rgb* rasterizeTexture[5*5];
-	int imageWidth = 5;
-	int imageHeight = 5;
+	//int squareSize = 10;
+	int squareSize = 200;
+	int imageWidth = squareSize;
+	int imageHeight = squareSize;
 	std::vector<Triangle> triangles;
 
 	FILE* filePtr;
@@ -63,7 +65,8 @@ public:
 	std::function<void(int xCoord, int yCoord, Rgb* fetchTexture, Rgb* rasterizedTexture, Triangle triangle)> functionLamda;
 	Rgb* SoftwareRenderer::FetchDataFromTexture(const char* path);
 	float SoftwareRenderer::EdgeFunction(Vector2 a, Vector2 b, Vector2 c);
-	void SoftwareRenderer::Init(Vector2 v0, Vector2 v1, Vector2 v2);
+	void SoftwareRenderer::Init();
+	void SoftwareRenderer::Start();
 	void SoftwareRenderer::Shutdown();
 	bool SoftwareRenderer::PointInTriangle(Vector2 A, Vector2 B, Vector2 C, Vector2 point);
 	//void SoftwareRenderer::DrawFlatTopTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2);

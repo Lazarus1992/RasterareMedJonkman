@@ -11,7 +11,8 @@ enum MeshName
 	Obj,
 	Quad,
 	Footman,
-	RayBeam
+	RayBeam,
+	TriangleLight
 };
 
 enum VBO_Index
@@ -64,5 +65,7 @@ class MeshResource
 	static shared_ptr<MeshResource> CreateObj(int objIndex);
 	static shared_ptr<MeshResource> CreateCube_t();
 	static shared_ptr<MeshResource> CreateQuad_t();
+	static shared_ptr<MeshResource> CreateTriangle_n();
+	static shared_ptr<MeshResource> CreateRasterizeObject();
 	~MeshResource();
 };

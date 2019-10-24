@@ -77,20 +77,37 @@ void MeshResource::Setup(MeshName name)
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 
-		//Create vertex buffer
+		//////Create vertex buffer
+		//glGenBuffers(1, &this->vbo);
+		//glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+		//glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(GLfloat), vertexBuffer, GL_STATIC_DRAW);
+		//glEnableVertexAttribArray(0);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 5, NULL);
+		//glEnableVertexAttribArray(1);
+		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 5, (GLvoid *)(sizeof(float32) * 3));
+
+
+		////Create index buffer
+		//glGenBuffers(1, &this->ebo);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), this->indexBuffer, GL_STATIC_DRAW);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		//IF NORMALS !!!!!!!!!!!!!!!!!!!!!!!!!
 		glGenBuffers(1, &this->vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-		glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(GLfloat), vertexBuffer, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 32 * sizeof(GLfloat), vertexBuffer, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 5, NULL);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, NULL);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 5, (GLvoid *)(sizeof(float32) * 3));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid *)(sizeof(float32) * 3));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 8, (GLvoid *)(sizeof(float32) * 5));
 
 		//Create index buffer
 		glGenBuffers(1, &this->ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), this->indexBuffer, GL_STATIC_DRAW);
-		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		glBindVertexArray(0);
 
@@ -108,6 +125,30 @@ void MeshResource::Setup(MeshName name)
 		glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(GLfloat), vertexBuffer, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+		glBindVertexArray(0);
+
+		break;
+
+	case TriangleLight:
+		currentMesh = TriangleLight;
+
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+
+		//Create vertex buffer
+		glGenBuffers(1, &this->vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+		glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat), vertexBuffer, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 2, NULL);
+
+
+		//Create index buffer
+		glGenBuffers(1, &this->ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(GLuint), this->indexBuffer, GL_STATIC_DRAW);
+		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		glBindVertexArray(0);
 
@@ -157,6 +198,10 @@ void MeshResource::Draw()
 
 	case RayBeam:
 		glDrawArrays(GL_LINES, 0, 2);
+		break;
+
+	case TriangleLight:
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 		break;
 
 	default:
@@ -315,16 +360,16 @@ shared_ptr<MeshResource> MeshResource::CreateObj(int objIndex)
 	// out->LoadOBJ("projects//MathLib4D//Obj//teapot//teapot.obj");
 	// out->LoadOBJ("projects//MathLib4D//Obj//cat//cat.obj");
 	// out->LoadOBJ("projects//MathLib4D//Obj//planet//earth.obj");
-	
+
 	switch (objIndex)
 	{
-		case 0:
-			// out->LoadOBJ("projects//MathLib4D//Obj//SimpleSphere//sphere.obj");
-			out->LoadOBJ("projects//MathLib4D//Obj//teapot//teapot.obj");
-			out->Setup(Obj);
-			break;
-		default:
-			break;
+	case 0:
+		// out->LoadOBJ("projects//MathLib4D//Obj//SimpleSphere//sphere.obj");
+		out->LoadOBJ("projects//MathLib4D//Obj//teapot//teapot.obj");
+		out->Setup(Obj);
+		break;
+	default:
+		break;
 	}
 
 	return out;
@@ -356,7 +401,7 @@ shared_ptr<MeshResource> MeshResource::CreateCube_t()
 		1, 1,
 
 		.5f, -.5f, -.5f, 1, //7
-		0, 1};
+		0, 1 };
 
 	out->indexBuffer = new GLuint[36]{
 		0, 2, 1, 0, 3, 2,
@@ -364,7 +409,7 @@ shared_ptr<MeshResource> MeshResource::CreateCube_t()
 		4, 1, 5, 4, 0, 1,
 		3, 6, 2, 3, 7, 6,
 		1, 6, 5, 1, 2, 6,
-		7, 5, 6, 7, 4, 5};
+		7, 5, 6, 7, 4, 5 };
 
 	out->Setup(Cube);
 	return out;
@@ -374,42 +419,28 @@ shared_ptr<MeshResource> MeshResource::CreateQuad_t()
 {
 	shared_ptr<MeshResource> out = make_shared<MeshResource>();
 
-	//float scale = 4.0f;
-	//out->vertexBuffer = new GLfloat[20]
-	//{
-
-	//	-.5f * 2 * scale, .5f * scale, .5f * scale, //0 //Topleft
-	//	0, 0,
-
-	//	.5f * 2 * scale, .5f * scale, .5f * scale, //1 //Topright
-	//	1, 0,
-
-	//	.5f * 2 * scale, -.5f * scale, .5f * scale, //2 //Bottomleft
-	//	1, 1,
-
-	//	-.5f * 2 * scale, -.5f * scale, .5f * scale, //3 //Bottomright
-	//	0, 1
-
-	//};
-
-	float scale = 1.0f;
-	out->vertexBuffer = new GLfloat[20]
+	float scale = 4.0f;
+	float normDir = 1;
+	out->vertexBuffer = new GLfloat[32]
 	{
 
 		-.5f * scale, .5f * scale, .5f * scale, //0 //Topleft
 		0, 0,
+		0, 0, normDir,
 
 		.5f * scale, .5f * scale, .5f * scale, //1 //Topright
 		1, 0,
+		0, 0, normDir,
 
 		.5f * scale, -.5f * scale, .5f * scale, //2 //Bottomleft
 		1, 1,
+		0, 0, normDir,
 
 		-.5f * scale, -.5f * scale, .5f * scale, //3 //Bottomright
-		0, 1
+		0, 1,
+		0, 0, normDir,
 
 	};
-
 
 	out->indexBuffer = new GLuint[6]{
 		0, 1, 2,
@@ -421,37 +452,99 @@ shared_ptr<MeshResource> MeshResource::CreateQuad_t()
 	return out;
 }
 
+shared_ptr<MeshResource> MeshResource::CreateRasterizeObject()
+{
+	shared_ptr<MeshResource> out = make_shared<MeshResource>();
+
+	float scale = 4.0f;
+	float normDir = 1;
+	
+	//float from = 0.0f;
+	//float to = 10.0f;
+
+	float from = 0.0f;
+	float to = 199.0f;
+
+	out->vertexBuffer = new GLfloat[8]
+	{
+		from, from,
+
+		to, from,
+
+		from, to,
+
+		to, to
+	};
+
+
+	out->indexBuffer = new GLuint[6]{
+		0, 1, 2,
+		2, 3, 1
+
+	};
+
+	return out;
+}
+
+shared_ptr<MeshResource> MeshResource::CreateTriangle_n()
+{
+	shared_ptr<MeshResource> out = make_shared<MeshResource>();
+
+
+	float scale = 1.0f;
+
+	float from = -0.5f;
+	float to = .5f;
+
+	out->vertexBuffer = new GLfloat[6]
+	{
+		from, from,
+
+		to, from,
+
+		from, to,
+	};
+
+
+	out->indexBuffer = new GLuint[3]{
+		0, 1, 2,
+	};
+
+	out->Setup(TriangleLight);
+	return out;
+}
+
 
 
 MeshResource *MeshResource::CreateCube_c()
 {
 	MeshResource *out = new MeshResource();
 	out->vertexBuffer = new GLfloat[64] //4 first are cube position, the rest are texcoords
-		{
+	{
 
-			-.5f, -.5f, .5f, 1, //0
-			0, 0, 1, 1,
+		-.5f, -.5f, .5f, 1, //0
+		0, 0, 1, 1,
 
-			-.5f, .5f, .5f, 1, //1
-			1, 0, 0, 1,
+		-.5f, .5f, .5f, 1, //1
+		1, 0, 0, 1,
 
-			.5f, .5f, .5f, 1, //2
-			0, 1, 0, 1,
+		.5f, .5f, .5f, 1, //2
+		0, 1, 0, 1,
 
-			.5f, -.5f, .5f, 1, //3
-			1, 1, 0, 1,
+		.5f, -.5f, .5f, 1, //3
+		1, 1, 0, 1,
 
-			-.5f, -.5f, -.5f, 1, //4
-			1, 1, 1, 1,
+		-.5f, -.5f, -.5f, 1, //4
+		1, 1, 1, 1,
 
-			-.5f, .5f, -.5f, 1, //5
-			1, 0, 0, 1,
+		-.5f, .5f, -.5f, 1, //5
+		1, 0, 0, 1,
 
-			.5f, .5f, -.5f, 1, //6
-			1, 0, 1, 1,
+		.5f, .5f, -.5f, 1, //6
+		1, 0, 1, 1,
 
-			.5f, -.5f, -.5f, 1, //7
-			0, 0, 1, 1};
+		.5f, -.5f, -.5f, 1, //7
+		0, 0, 1, 1 };
 
 	out->indexBuffer = new GLuint[36]{
 		0, 2, 1, 0, 3, 2,
@@ -459,7 +552,7 @@ MeshResource *MeshResource::CreateCube_c()
 		4, 1, 5, 4, 0, 1,
 		3, 6, 2, 3, 7, 6,
 		1, 6, 5, 1, 2, 6,
-		7, 5, 6, 7, 4, 5};
+		7, 5, 6, 7, 4, 5 };
 
 	out->Setup(Cube);
 	return out;
@@ -481,7 +574,7 @@ MeshResource *MeshResource::CreateQuad_c()
 
 	out->indexBuffer = new GLuint[6]{
 		0, 1, 2,
-		2, 3, 0};
+		2, 3, 0 };
 
 	out->Setup(Cube);
 	return out;

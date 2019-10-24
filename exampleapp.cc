@@ -244,66 +244,6 @@ void JontesProjekt::Run()
 //fread(data, sizeof(Rgb), w*h, f);
 //fclose(f);
 
-////Write file and allocate data
-//FILE *fp = fopen("TextureToWriteTo.ppm", "wb"); /* b - binary mode */
-////FILE *fp = fopen("TextureToFetchFrom.ppm", "wb"); /* b - binary mode */
-//(void)fprintf(fp, "P6\n%d %d\n255\n", h, w);
-//Rgb *BIGcolor = new Rgb[w * h];
-//float area = edgeFunction(v0, v1, v2);
-//for (uint32_t j = 0; j < h; ++j) {
-//	for (uint32_t i = 0; i < w; ++i) {
-//		
-//		//Vector2 p = { i + 0.5f, j + 0.5f };
-//		Vector2 p = { (float)i, (float)j };
-//		float w0 = edgeFunction(v1, v2, p);
-//		float w1 = edgeFunction(v2, v0, p);
-//		float w2 = edgeFunction(v0, v1, p);
-
-//		if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-//			w0 /= area;
-//			w1 /= area;
-//			w2 /= area;
-
-//			Vector2 textureUV = st0 * w0 + st1 * w1 + st2 * w2;
-//			//float row = h - 1;
-//			//float column = w - 1;
-//			float row = h;
-//			float column = w;
-//			int pixelToGet = textureUV.y * row * (float)w + textureUV.x * column;
-
-//			////Row * width + col
-//			BIGcolor[j * w + i][0] = data[pixelToGet][0];
-//			BIGcolor[j * w + i][1] = data[pixelToGet][1];
-//			BIGcolor[j * w + i][2] = data[pixelToGet][2];
-
-
-//			//OLD
-//			//float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
-//			//float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
-
-//			//BIGcolor[j * w + i][0] = (unsigned char)(r * 255);
-//			//BIGcolor[j * w + i][1] = (unsigned char)(g * 255);
-//			//BIGcolor[j * w + i][2] = (unsigned char)(b * 255);
-
-
-//			//RANDOM
-//			//float r = (i + 1) * 211231 % 255;
-//			//float g = (i + j + 7) * 323123 % 255;
-//			//float b = (i - j + 4) * 631515 % 255;
-
-//			//BIGcolor[j * w + i][0] = (unsigned char)(r);
-//			//BIGcolor[j * w + i][1] = (unsigned char)(g);
-//			//BIGcolor[j * w + i][2] = (unsigned char)(b);
-//		}
-
-
-//		//BIGcolor[j * w + i][0] = data[0][0];
-//		//BIGcolor[j * w + i][1] = data[0][1];
-//		//BIGcolor[j * w + i][2] = data[0][2];
-//	}
-//}
-//(void)fwrite(BIGcolor, 1, w*h*3, fp);
-//(void)fclose(fp);
 #pragma endregion
 
 	//Vector2 v0 = { 491.407, 411.407 }; //höger röd
@@ -312,9 +252,11 @@ void JontesProjekt::Run()
 	//Vector2 v0 = { 20.407, 40.407 }; //höger röd
 	//Vector2 v1 = { 10.593, 30.5928 }; //uppe vänster grön
 	//Vector2 v2 = { 40.593, 30.407 }; //nere vänster blå
-	Vector2 v0_00 = { 5.0f, 5.0f }; //u: 1, v: 1	Nere höger
-	Vector2 v1_00 = { 0.0f, 0.0f }; //u: 0, v: 0	Uppe vänster
-	Vector2 v2_00 = { 0.0f, 5.0f }; //u: 0, v: 1 	Nere vänster
+
+
+	//Vector2 v0_00 = { 5.0f, 5.0f }; //u: 1, v: 1	Nere höger
+	//Vector2 v1_00 = { 0.0f, 0.0f }; //u: 0, v: 0	Uppe vänster
+	//Vector2 v2_00 = { 0.0f, 5.0f }; //u: 0, v: 1 	Nere vänster
 
 	Vector2 v0_01 = { 0.0f, 0.0f };		// Uppe v'nster
 	Vector2 v1_01 = { 5.0f, 1.0f };		// 
@@ -325,9 +267,79 @@ void JontesProjekt::Run()
 	//Vector2 st2 = { 0, 1 };
 
 
+	//Vector2 v0 = v0_00;
+	//Vector2 v1 = v1_00;
+	//Vector2 v2 = v2_00;
 	Vector2 v0 = v0_01;
 	Vector2 v1 = v1_01;
 	Vector2 v2 = v2_01;
+	//int w = 200;
+	//int h = 200;
+	////Write file and allocate data
+	////FILE *fp = fopen("TextureToWriteTo.ppm", "wb"); /* b - binary mode */
+	//FILE *fp = fopen("TextureToFetchFrom2.ppm", "wb"); /* b - binary mode */
+	////(void)fprintf(fp, "P6\n%d %d\n255\n", h, w);
+	//(void)fprintf(fp, "P6\n%d %d\n255\n", h, w);
+	//Rgb *BIGcolor = new Rgb[w * h];
+	//float area = edgeFunction(v0, v1, v2);
+	//for (uint32_t j = 0; j < h; ++j) {
+	//	for (uint32_t i = 0; i < w; ++i) {
+
+	//		//Vector2 p = { i + 0.5f, j + 0.5f };
+	//		Vector2 p = { (float)i, (float)j };
+	//		float w0 = edgeFunction(v1, v2, p);
+	//		float w1 = edgeFunction(v2, v0, p);
+	//		float w2 = edgeFunction(v0, v1, p);
+
+	//		//if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+	//			w0 /= area;
+	//			w1 /= area;
+	//			w2 /= area;
+
+	//			//Vector2 textureUV = st0 * w0 + st1 * w1 + st2 * w2;
+	//			//float row = h - 1;
+	//			//float column = w - 1;
+	//			//float row = h;
+	//			//float column = w;
+	//			//int pixelToGet = textureUV.y * row * (float)w + textureUV.x * column;
+
+	//			////Row * width + col
+	//			//BIGcolor[j * w + i][0] = data[pixelToGet][0];
+	//			//BIGcolor[j * w + i][1] = data[pixelToGet][1];
+	//			//BIGcolor[j * w + i][2] = data[pixelToGet][2];
+
+
+	//			//OLD
+	//			//float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
+	//			//float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
+
+	//			//BIGcolor[j * w + i][0] = (unsigned char)(r * 255);
+	//			//BIGcolor[j * w + i][1] = (unsigned char)(g * 255);
+	//			//BIGcolor[j * w + i][2] = (unsigned char)(b * 255);
+
+
+	//			//RANDOM
+	//			float r = (i + 1) % 255;
+	//			float g = (i + j + 37) % 255;
+	//			//float b = pow( float(j) + 4.0f, 3.0f) % 255;
+	//			float b = int((float(j) + 423.0f) / 0.1f) % 255;
+	//			//float r = (i + 1) * 211231 % 255;
+	//			//float g = (i + j + 7) * 323123 % 255;
+	//			//float b = (i - j + 4) * 631515 % 255;
+
+	//			BIGcolor[j * w + i][0] = (unsigned char)(r);
+	//			BIGcolor[j * w + i][1] = (unsigned char)(g);
+	//			BIGcolor[j * w + i][2] = (unsigned char)(b);
+	//		//}
+
+
+	//		//BIGcolor[j * w + i][0] = data[0][0];
+	//		//BIGcolor[j * w + i][1] = data[0][1];
+	//		//BIGcolor[j * w + i][2] = data[0][2];
+	//	}
+	//}
+	//(void)fwrite(BIGcolor, 1, w*h * 3, fp);
+	//(void)fclose(fp);
 
 
 
@@ -337,9 +349,12 @@ void JontesProjekt::Run()
 
 	GraphicsNode *graphicsNode = new GraphicsNode();
 	graphicsNode->Setup(0);
-	graphicsNode->worldTransform.SetPositionZ(-8);
+	//graphicsNode->worldTransform.SetPositionZ(-8);
+	graphicsNode->worldTransform.SetPositionZ(0);
 	 //graphicsNode->SetMesh(MeshResource::CreateObj(0));
-	graphicsNode->SetMesh(MeshResource::CreateQuad_t());
+	 //graphicsNode->SetMesh(MeshResource::CreateQuad_t());
+	 graphicsNode->SetMesh(MeshResource::CreateRasterizeObject());
+	//graphicsNode->SetMesh(MeshResource::CreateTriangle_n());
 	graphicsNodes.push_back(graphicsNode);
 
 	//for (int i = 0; i < 20; i++)
@@ -347,13 +362,21 @@ void JontesProjekt::Run()
 	//	cout << *(graphicsNode->GetMesh()->vertexBuffer + i) << endl;
 	//}
 
-	SoftwareRenderer rasterizer;
-	rasterizer.mvpMatrix = (projectionMatrix * viewMatrix * graphicsNode->worldTransform);
-	rasterizer.vertexBuffer = graphicsNode->GetMesh()->vertexBuffer;
-	rasterizer.indexBuffer = graphicsNode->GetMesh()->indexBuffer;
-	rasterizer.Init(v0, v1, v2);
-	rasterizer.DrawTriangle(v0, v1, v2);
-	rasterizer.Shutdown();
+			SoftwareRenderer rasterizer;
+			//viewMatrix.Translate(Vector3(1, 0, 0));
+			//viewMatrix.ScaleByValue(1.0f);
+			//rasterizer.mvpMatrix = (projectionMatrix * viewMatrix * graphicsNode->worldTransform);
+			//rasterizer.mvpMatrix = (projectionMatrix * viewMatrix);
+			//rasterizer.mvpMatrix = (viewMatrix);
+			rasterizer.vertexBuffer = graphicsNode->GetMesh()->vertexBuffer;
+			rasterizer.indexBuffer = graphicsNode->GetMesh()->indexBuffer;
+			rasterizer.Init();
+			rasterizer.Start();
+
+			//rasterizer.DrawTriangle(v0, v1, v2);
+
+			rasterizer.Shutdown();
+			return
 
 	//Will be the same for all graphicNodes
 	pointLight.pos.SetVect(0.0f, 0.0f, -4.0f, 1.0f);
