@@ -13,9 +13,8 @@ struct Vertex {
 		position = inVector;
 	}
 
-	Vector2 position;		//Positions
+	Vector2 position;	//Positions
 	Vector2 uv;			//Texturecoordinates
-	//float u, v;			//Texturecoordinates
 	float n0, n1, n2;	//Normals
 };
 
@@ -43,12 +42,8 @@ public:
 	MatrixLib4D mvpMatrix;
 	TextureResource texture;
 
-	//unsigned char* fetchTexture[3];
-	//unsigned char* rasterizeTexture[3];	
-	Rgb* fetchTexture;
-	Rgb* rasterizeTexture;
-	//Rgb* fetchTexture[5*5];
-	//Rgb* rasterizeTexture[5*5];
+	Rgb* fetchTexture;		//Existing imagebuffer
+	Rgb* rasterizeTexture;	//New imagebuffer
 	//int squareSize = 10;
 	int squareSize = 200;
 	int imageWidth = squareSize;
@@ -69,7 +64,5 @@ public:
 	void SoftwareRenderer::Start();
 	void SoftwareRenderer::Shutdown();
 	bool SoftwareRenderer::PointInTriangle(Vector2 A, Vector2 B, Vector2 C, Vector2 point);
-	//void SoftwareRenderer::DrawFlatTopTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2);
-	//void SoftwareRenderer::DrawFlatBotTriangle(const Vector2& v0, const Vector2& v1, const Vector2& v2);
 };
 

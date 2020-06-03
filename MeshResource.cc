@@ -463,7 +463,8 @@ shared_ptr<MeshResource> MeshResource::CreateRasterizeObject()
 	//float to = 10.0f;
 
 	float from = 0.0f;
-	float to = 199.0f;
+	//float to = 199.0f;
+	float to = 200.0f;
 
 	out->vertexBuffer = new GLfloat[8]
 	{
