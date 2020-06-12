@@ -28,6 +28,10 @@ struct Triangle {
 	Vertex v0, v1, v2;
 };
 
+struct Weights {
+	float w1, w2, w3;
+};
+
 class SoftwareRenderer
 {
 public:
@@ -63,6 +67,10 @@ public:
 	void SoftwareRenderer::Init();
 	void SoftwareRenderer::Start();
 	void SoftwareRenderer::Shutdown();
+	void SoftwareRenderer::Bresenhams(Vector2 p0, Vector2 p1, vector<Vector2>& pointsOnLine);
+	void SoftwareRenderer::PlotLineHigh(float x0, float y0, float x1, float y1, vector<Vector2>& pointsOnLine);
+	void SoftwareRenderer::PlotLineLow(float x0, float y0, float x1, float y1, vector<Vector2>& pointsOnLine);
 	bool SoftwareRenderer::PointInTriangle(Vector2 A, Vector2 B, Vector2 C, Vector2 point);
+	void SoftwareRenderer::Barycentric(const float x, const float y, const Vertex& v1, const Vertex& v2, const Vertex& v3, Weights& w);
 };
 

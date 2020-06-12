@@ -192,7 +192,6 @@ void JontesProjekt::Run()
 	projectionMatrix = projectionMatrix.Perspective(45.0f, windowX / windowY, 0.1f, 100.0f);
 
 
-
 	GraphicsNode *graphicsNode = new GraphicsNode();
 	graphicsNode->Setup(0);
 	graphicsNode->worldTransform.SetPositionZ(0);
