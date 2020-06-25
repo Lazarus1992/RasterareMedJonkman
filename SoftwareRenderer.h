@@ -63,7 +63,7 @@ public:
 	void SoftwareRenderer::DrawFlatBotTriangle(Vector2 v0, Vector2 v1, Vector2 v2);
 	std::function<void(int xCoord, int yCoord, Rgb* fetchTexture, Rgb* rasterizedTexture, Triangle triangle)> functionLamda;
 	Rgb* SoftwareRenderer::FetchDataFromTexture(const char* path);
-	float SoftwareRenderer::EdgeFunction(Vector2 a, Vector2 b, Vector2 c);
+	//float SoftwareRenderer::EdgeFunction(Vector2 a, Vector2 b, Vector2 c);
 	void SoftwareRenderer::Init();
 	void SoftwareRenderer::Start();
 	void SoftwareRenderer::Shutdown();

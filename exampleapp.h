@@ -20,7 +20,6 @@ class JontesProjekt : public Core::App
   public:
 	JontesProjekt();
 	~JontesProjekt();
-	float JontesProjekt::edgeFunction(const Vector2 &a, const Vector2 &b, const Vector2 &c);
 	void DrawUI();
 	void KeyPress();
 	bool Open();

@@ -163,14 +163,6 @@ bool JontesProjekt::Open()
 	return false;
 }
 
-inline
-float JontesProjekt::edgeFunction(const Vector2 &a, const Vector2 &b, const Vector2 &c)
-{
-	return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
-}
-
-
-
 void JontesProjekt::Run()
 {
 	glEnable(GL_DEPTH_TEST);
